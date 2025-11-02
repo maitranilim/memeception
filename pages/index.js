@@ -27,13 +27,13 @@ export default function Home() {
       
       if (data.error || data.fallback) {
         setError(data.error);
-        setMeme({ url: '/fallback.png', title: data.error, fallback: true });
+        setMeme({ url: '/fallback.svg', title: data.error, fallback: true });
       } else {
         setMeme(data);
       }
     } catch (err) {
       setError('Network error! Are you even connected? 📡');
-      setMeme({ url: '/fallback.png', title: 'Error loading meme', fallback: true });
+      setMeme({ url: '/fallback.svg', title: 'Error loading meme', fallback: true });
     } finally {
       setLoading(false);
     }
@@ -120,7 +120,7 @@ export default function Home() {
                   alt={meme.title}
                   className="w-full h-auto max-h-[70vh] object-contain"
                   onError={(e) => {
-                    e.target.src = '/fallback.png';
+                    e.target.src = '/fallback.svg';
                   }}
                 />
                 {meme.nsfw && (
