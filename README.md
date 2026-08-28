@@ -1,83 +1,102 @@
 # Memeception
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+A fast, keyboard-driven meme reader. Pick a category, hold Space, save the ones
+worth keeping, and share a link that unfurls with the actual image.
 
-> A delightfully simple meme generator that makes you laugh—because life's too short for boring internet browsing!
+Built with Next.js (App Router), React 19, TypeScript and Tailwind CSS v4.
 
-## 🎭 What is Memeception?
+## Features
 
-Memeception is a modern, lightweight meme application built with **Next.js** and **Tailwind CSS**. It fetches memes from various genres through a meme API proxy and delivers them in a beautiful, mobile-ready interface with dark and light themes.
+**Keyboard first.** Every action has a shortcut, and `?` lists them.
 
-## ✨ Features
+| Key | Action |
+| --- | --- |
+| `Space` / `→` | Next meme |
+| `S` | Save or unsave |
+| `C` | Copy a share link |
+| `F` | Toggle the saved tab |
+| `D` | Toggle theme |
+| `⌘K` / `Ctrl+K` | Command palette |
+| `?` | Show all shortcuts |
 
-- **🎨 Genre Picker**: Choose your meme flavor—wholesome, programming, dark humor, or random!
-- **🔌 Meme API Proxy**: Secure server-side API integration for seamless meme fetching
-- **🌓 Dark/Light Theme**: Toggle between themes to match your mood (or the time of day)
-- **📱 Mobile-Ready UI**: Fully responsive design that looks great on any device
-- **😎 Witty Error Handling**: Even our errors are entertaining (404? More like fun-oh-fun!)
-- **© Copyright Footer**: Properly credited because memes deserve respect too
+**Command palette.** `⌘K` opens a searchable list of every category and action,
+with subsequence matching — `pgh` finds *Programmer Humor*.
 
-## 🚀 Getting Started
+**Saved memes, no account.** Favourites are kept in `localStorage` and never
+leave the browser. Export them to JSON and import them somewhere else. Open tabs
+stay in sync through the `storage` event.
 
-### Prerequisites
+**Share links that preview.** Every meme has a permalink at `/m/<id>` rendered
+on the server, with an OpenGraph image generated per meme, so a link pasted into
+Slack, iMessage or Discord unfurls with the meme instead of a generic card.
 
-- Node.js 16+ installed
-- npm or yarn package manager
+**No layout shift.** The image's real aspect ratio is reserved before it loads,
+and the next meme is prefetched while you look at the current one, so `Next` is
+instant rather than a spinner.
 
-### Installation
+**Theme without a flash.** An inline script applies the stored or system theme
+before first paint; React reads it back through `useSyncExternalStore` rather
+than keeping a second copy that could disagree during hydration.
+
+## Getting started
+
+Requires Node.js 20 or newer.
 
 ```bash
-# Clone the repository
-git clone https://github.com/maitranilim/memeception.git
-
-# Navigate to project directory
-cd memeception
-
-# Install dependencies
 npm install
-# or
-yarn install
-
-# Run the development server
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the magic happen!
+Open [http://localhost:3000](http://localhost:3000).
 
-## 🛠️ Tech Stack
+| Script | Purpose |
+| --- | --- |
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm start` | Serve the production build |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | `tsc --noEmit` |
 
-- **Framework**: [Next.js](https://nextjs.org/) - The React framework for production
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
-- **API**: Meme API with server-side proxy for secure requests
-- **Theming**: CSS variables + local storage for persistent theme preferences
+Set `NEXT_PUBLIC_SITE_URL` to your deployed origin so OpenGraph URLs resolve
+absolutely. It defaults to `http://localhost:3000`.
 
-## 🎯 Usage
+## How it works
 
-1. Select a meme genre from the dropdown picker
-2. Click the "Get Meme" button to fetch a fresh meme
-3. Toggle between dark and light themes using the theme switcher
-4. Enjoy endless scrolling and laughing!
+```
+app/
+  api/meme/route.ts        Validates input, proxies Reddit, normalises the response
+  m/[id]/page.tsx          Server-rendered share permalink
+  m/[id]/opengraph-image.tsx  Per-meme OG card via next/og
+  layout.tsx               Metadata and the pre-paint theme script
+components/                Presentational components
+lib/
+  genres.ts                Subreddit allow-list (a security boundary, not just UI data)
+  reddit.ts                Upstream client: timeouts, caching, response shaping
+  favorites-store.ts       localStorage store exposed via useSyncExternalStore
+```
 
-## 🌐 Deployment
+The `genre` parameter arrives from user input and is interpolated into an
+upstream URL, so it is checked against the allow-list in `lib/genres.ts` before
+any request is made. Without that check the API route would be an open proxy for
+arbitrary subreddits.
 
-Deploy your own instance with one click:
+Images are rendered with a plain `<img>` rather than `next/image` on purpose:
+sources are arbitrary user-submitted hosts, and routing them through the image
+optimizer would proxy unbounded third-party traffic through the deployment.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/maitranilim/memeception)
+## Design
 
-Or deploy manually to your favorite platform (Netlify, Railway, etc.)
+Interaction feedback is limited to colour and opacity over 120ms. Nothing
+scales, lifts, or animates its layout on hover. Colours resolve through CSS
+custom properties on `:root` and `[data-theme]`, so a theme is a set of values
+rather than a conditional in every component. `prefers-reduced-motion` is
+honoured.
 
-## 📝 License
+## Deployment
 
-This project is open source and available under the [MIT License](LICENSE).
+Deploy to any platform that runs Next.js. The API route and share pages are
+server-rendered on demand; everything else is static.
 
-## 🙏 Acknowledgments
+## Licence
 
-- Meme API providers for the endless stream of quality content
-- The Next.js and Tailwind CSS teams for amazing tools
-- Meme creators everywhere—you're the real MVPs
-
----
-
-**Made with ❤️ and a sense of humor** | © 2025 Memeception
+[MIT](LICENSE)
