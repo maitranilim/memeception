@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memeception | Meme Generator</title>
+  <meta name="description" content="Generate viral memes instantly with Memeception. A fast, meme viewer and saver powered by the Meme API." />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+
+  <!-- JSON-LD SEO Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [{
+      "@type": "Question",
+      "name": "What is Memeception?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Memeception is a real-time meme generator that fetches content from Reddit's top communities."
+      }
+    }, {
+      "@type": "Question",
+      "name": "Is this tool free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, Memeception is 100% free and open source, with no watermarks."
+      }
+    }, {
+      "@type": "Question",
+      "name": "How do I save memes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Click the 'Save' button (floppy disk icon) to store memes locally in your browser's storage."
+      }
+    }]
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4315629123147124"
+     crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+  <div class="app-wrapper">
+    <header>
+      <h1>Meme<span>ception</span></h1>
+      <div class="header-actions">
+        <button class="micro-btn" id="view-saved-btn" aria-label="View Saved">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </button>
+        <button class="micro-btn" id="theme-toggle" aria-label="Toggle Theme">
+          <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg id="icon-moon" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Genre Selector -->
+    <div class="scroll-mask" id="genre-container">
+      <div class="pill active" data-value="dankmemes">Dank</div>
+      <div class="pill" data-value="ProgrammerHumor">Tech</div>
+      <div class="pill" data-value="wholesomememes">Wholesome</div>
+      <div class="pill" data-value="me_irl">Relatable</div>
+      <div class="pill" data-value="darkmemes">Dark</div>
+      <div class="pill" data-value="puns">Puns</div>
+      <div class="pill" data-value="sarcasm">Sarcasm</div>
+      <div class="pill" data-value="cringememes">Cringe</div>
+    </div>
+
+    <!-- Meme Viewer -->
+    <div class="card-scene">
+      <div class="meme-card" id="meme-card">
+        <div class="loading-overlay" id="loader">
+          <div class="spinner"></div>
+        </div>
+        <div class="meme-image-container">
+          <img id="meme-img" src="" alt="Meme content" />
+        </div>
+      </div>
+    </div>
+
+    <div class="credit" id="credit">
+      <!-- Credits inject here -->
+    </div>
+
+    <div class="actions">
+      <button class="main-btn" id="fetch-btn">Gimme Meme</button>
+      <button class="save-btn" id="save-btn" disabled>💾</button>
+    </div>
+
+    <!-- SEO / FAQ Section -->
+    <section class="seo-section">
+      <h2>Frequently Asked Questions</h2>
+
+      <details>
+        <summary>What is Memeception?</summary>
+        <div class="faq-answer">
+          Memeception is a real-time meme generator that instantly fetches the freshest content from Reddit's top humor communities. It uses a lightweight API to deliver memes without tracking or clutter.
+        </div>
+      </details>
+
+      <details>
+        <summary>Is this tool free to use?</summary>
+        <div class="faq-answer">
+          Yes! Memeception is 100% free. You can browse unlimited memes, switch between dark and light modes, and save your favorites locally without paying a cent or seeing intrusive ads.
+        </div>
+      </details>
+
+      <details>
+        <summary>How do I save memes?</summary>
+        <div class="faq-answer">
+          Simply tap the 'Floppy Disk' icon next to the 'Gimme Meme' button. Your saved memes are stored securely in your browser's local storage, meaning they persist even if you close the tab.
+        </div>
+      </details>
+
+      <details>
+        <summary>Why use this over Instagram?</summary>
+        <div class="faq-answer">
+          Speed and focus. Memeception strips away the comments, likes, and algorithms, giving you raw, unadulterated humor in a clean, interface designed for pure enjoyment.
+        </div>
+      </details>
+    </section>
+
+    <div class="credit-bar">
+      Built with Love by Niltra · <a href="https://x.com/confid_sh" target="_blank" rel="noopener noreferrer">confid</a>
+    </div>
+  </div>
+
+  <!-- Saved Drawer -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <h3>Saved Memes</h3>
+      <button class="close-drawer" id="close-drawer">Close</button>
+    </div>
+    <div class="saved-grid" id="saved-grid">
+      <!-- Saved Items -->
+    </div>
+  </div>
+
+  <!-- App JS -->
+  <script src="script.js"></script>
+</body>
+</html>
