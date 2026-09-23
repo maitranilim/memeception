@@ -9,7 +9,8 @@
   const storeKey = 'savedMemes';
   const $ = (selector) => document.querySelector(selector);
   const els = {
-    body: document.body, genre: $('#genre-container'), readerGenre: $('#reader-genre-container'), img: $('#meme-img'),
+    body: document.body, genre: $('#genre-container'), genreSlot: $('#genre-slot'), genreDock: $('#genre-dock'),
+    topbar: $('.topbar'), img: $('#meme-img'),
     imageContainer: $('#meme-image-container'), loader: $('#loader'),
     card: $('#meme-card'), section: $('.reader-section'), fetch: $('#fetch-btn'),
     surprise: $('#surprise-btn'), prev: $('#prev-btn'), save: $('#save-btn'),
@@ -60,12 +61,10 @@
     if (!selected) return;
     state.genre = selected[0];
     state.mood = selected[1];
-    [els.genre, els.readerGenre].forEach((group) => {
-      [...group.querySelectorAll('.mood-pill')].forEach((button) => {
-        const active = button.dataset.value === state.genre;
-        button.classList.toggle('active', active);
-        button.setAttribute('aria-pressed', String(active));
-      });
+    [...els.genre.querySelectorAll('.mood-pill')].forEach((button) => {
+      const active = button.dataset.value === state.genre;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
     });
     const index = categories.findIndex(([genre]) => genre === state.genre);
     els.activeMood.textContent = `${state.mood.toUpperCase()} MODE`;
@@ -289,25 +288,51 @@
     els.theme.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
     els.themeIcon.innerHTML = isDark ? '<path d="M20.8 14.3A8.6 8.6 0 0 1 9.7 3.2 8.8 8.8 0 1 0 20.8 14.3Z"/>' : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>';
   }
-  [els.genre, els.readerGenre].forEach((group) => {
-    group.addEventListener('click', (event) => {
-      const button = event.target.closest('.mood-pill');
-      if (button) setCategory(button.dataset.value);
-    });
-    group.querySelectorAll('.mood-pill').forEach((button, index) => button.style.setProperty('--pill-index', index));
+  els.genre.addEventListener('click', (event) => {
+    const button = event.target.closest('.mood-pill');
+    if (button) setCategory(button.dataset.value);
   });
+  els.genre.querySelectorAll('.mood-pill').forEach((button, index) => button.style.setProperty('--pill-index', index));
   if ('IntersectionObserver' in window) {
-    [els.genre, els.readerGenre].forEach((group) => {
-      group.classList.add('reveal-ready');
-      const revealObserver = new IntersectionObserver((entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          group.classList.add('is-visible');
-          revealObserver.disconnect();
-        }
-      }, { threshold: 0.2, rootMargin: '0px 0px -6% 0px' });
-      revealObserver.observe(group);
-    });
+    els.genre.classList.add('reveal-ready');
+    const revealObserver = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        els.genre.classList.add('is-visible');
+        revealObserver.disconnect();
+      }
+    }, { threshold: 0.2, rootMargin: '0px 0px -6% 0px' });
+    revealObserver.observe(els.genre);
   }
+  let genreDocked = false;
+  let lastScrollY = window.scrollY;
+  let scrollFrame = 0;
+  function setGenreDocked(docked) {
+    if (genreDocked === docked) return;
+    genreDocked = docked;
+    if (docked) {
+      els.genreSlot.style.minHeight = `${els.genre.offsetHeight + 20}px`;
+      els.genreDock.append(els.genre);
+      els.genreDock.classList.add('visible');
+      els.genreDock.setAttribute('aria-hidden', 'false');
+    } else {
+      els.genreSlot.append(els.genre);
+      els.genreDock.classList.remove('visible');
+      els.genreDock.setAttribute('aria-hidden', 'true');
+      els.genreSlot.style.minHeight = '';
+    }
+  }
+  window.addEventListener('scroll', () => {
+    if (scrollFrame) return;
+    scrollFrame = requestAnimationFrame(() => {
+      const scrollY = window.scrollY;
+      const scrollingUp = scrollY < lastScrollY;
+      const slotTop = els.genreSlot.getBoundingClientRect().top;
+      const shouldDock = scrollingUp && scrollY > 0 && slotTop <= els.topbar.offsetHeight + 4;
+      setGenreDocked(shouldDock);
+      lastScrollY = scrollY;
+      scrollFrame = 0;
+    });
+  }, { passive: true });
   els.fetch.addEventListener('click', () => loadMeme());
   els.surprise.addEventListener('click', () => loadMeme({ random: true }));
   els.prev.addEventListener('click', previousMeme);

@@ -14,26 +14,19 @@ main{max-width:1180px;padding:0 32px;margin:0 auto}.intro{min-height:300px;displ
 @media(max-width:370px){main{padding:0 12px}.topbar{padding:0 12px}.intro-aside{right:-64px;opacity:.55}h1{font-size:48px}.mood-grid{gap:7px}.mood-pill{min-height:65px;padding:8px}.reader-section{padding:12px}.how-section{gap:7px}.how-step p{font-size:8px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
-/* The reader keeps category switching close while the original picker scrolls away. */
+/* The same mood picker moves into the header dock only while scrolling back up. */
 :root{--topbar-height:76px}
 .brand-mark{line-height:1;padding-bottom:2px}
-.reader-section{overflow:visible}
-.reader-genres{position:sticky;top:calc(var(--topbar-height) + 8px);z-index:10;margin:0 0 20px;padding:12px 14px 14px;border:1px solid color-mix(in srgb,var(--line) 82%,transparent);border-radius:18px;background:color-mix(in srgb,var(--surface) 88%,transparent);box-shadow:0 8px 24px var(--shadow);backdrop-filter:blur(16px)}
-.reader-genres-label{margin:0;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.15em}
-.reader-mood-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:9px 0 0}
-.reader-mood-grid .mood-pill{min-height:42px;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;padding:8px 11px;border-radius:12px;box-shadow:none}
-.reader-mood-grid .mood-pill:hover{transform:translateY(-2px)}
-.reader-mood-grid .mood-emoji{font-size:15px}
-.reader-mood-grid .mood-pill>span:nth-child(2){font-size:11px}
-.reader-mood-grid .mood-pill.active{box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 48%,#006bb0)}
+.genre-dock{position:fixed;inset:var(--topbar-height) 0 auto;z-index:19;background:color-mix(in srgb,var(--bg) 92%,transparent);border-bottom:1px solid var(--line);box-shadow:0 10px 24px var(--shadow);backdrop-filter:blur(18px);opacity:0;visibility:hidden;transform:translateY(-12px);pointer-events:none;transition:opacity .2s,transform .2s,visibility .2s}
+.genre-dock.visible{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
+#genre-dock #genre-container{max-width:1180px;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;margin:0 auto;padding:10px 32px}
+#genre-dock .mood-pill{min-height:46px;flex-direction:row;align-items:center;justify-content:center;gap:8px;padding:8px 10px;border-radius:13px;box-shadow:none}
+#genre-dock .mood-arrow{display:none}
 .mood-grid.reveal-ready .mood-pill{opacity:0;transform:translateY(30px) scale(.86);filter:blur(5px)}
 .mood-grid.reveal-ready.is-visible .mood-pill{animation:mood-arrive .72s cubic-bezier(.16,1.25,.3,1) both;animation-delay:calc(var(--pill-index,0)*95ms)}
 @keyframes mood-arrive{0%{opacity:0;transform:translateY(30px) scale(.86);filter:blur(5px)}68%{opacity:1;transform:translateY(-4px) scale(1.035);filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
 .meme-image-container{height:clamp(340px,48vw,560px)}
-@media(max-width:950px){.reader-mood-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.meme-image-container{height:clamp(340px,54vw,560px)}}
-@media(max-width:650px){:root{--topbar-height:64px}.reader-genres{top:calc(var(--topbar-height) + 5px);padding:10px;border-radius:15px;margin-bottom:16px}.reader-mood-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.reader-mood-grid .mood-pill{min-height:40px;padding:7px 8px;gap:6px}.reader-mood-grid .mood-pill>span:nth-child(2){font-size:10px}.meme-image-container{height:min(72vh,540px);min-height:320px}}
-@media(max-width:370px){.reader-mood-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:950px){#genre-dock #genre-container{grid-template-columns:repeat(4,minmax(0,1fr))}.meme-image-container{height:clamp(340px,54vw,560px)}}
+@media(max-width:650px){:root{--topbar-height:64px}#genre-dock #genre-container{gap:6px;padding:8px 17px}#genre-dock .mood-pill{min-height:42px;padding:7px 8px;gap:6px}#genre-dock .mood-pill>span:nth-child(2){font-size:10px}.meme-image-container{height:min(72vh,540px);min-height:320px}}
+@media(max-width:370px){#genre-dock #genre-container{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.mood-grid.reveal-ready .mood-pill,.mood-grid.reveal-ready.is-visible .mood-pill{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}}
-
-/* The second picker sits after the meme card, before the next controls. */
-.reader-genres{position:relative;top:auto;z-index:1;margin:20px 0 0}
