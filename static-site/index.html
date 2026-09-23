@@ -50,6 +50,16 @@
     </section>
 
     <section class="reader-section" id="reader" aria-label="Meme viewer">
+      <div class="reader-topline"><div class="now-playing"><span class="live-dot"></span><span id="active-mood">DANK MODE</span><span class="topline-divider">/</span><span id="meme-number">YOUR NEXT SCROLL</span></div><button class="text-button" id="surprise-btn"><span aria-hidden="true">✳</span> Surprise me</button></div>
+      <div class="viewer-layout">
+        <div class="viewer-rail" aria-hidden="true"><span class="rail-label">MOOD</span><span class="rail-current" id="rail-current">01</span><span class="rail-line"></span><span class="rail-total">08</span><span class="rail-label rail-bottom">MEMECEPTION</span></div>
+        <article class="meme-card" id="meme-card" aria-live="polite">
+          <div class="meme-card-head"><span class="meme-label"><span class="label-dot"></span> INTERNET FINDS</span></div>
+          <div class="meme-image-container" id="meme-image-container"><div class="loading-overlay" id="loader"><span class="loader-orbit"></span><span>Finding your next one</span></div><img id="meme-img" src="" alt="Meme" /></div>
+          <div class="meme-details"><div class="meme-caption"><p class="caption-label">THE MEME</p><h2 id="meme-title">Your next favorite is out there.</h2><p class="meme-byline" id="credit">A new one is just a tap away.</p></div><div class="meme-tools"><button class="tool-button" id="share-btn" aria-label="Share meme" title="Share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m0 0L7 8m5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="tool-button save-btn" id="save-btn" aria-label="Save meme" title="Save this one"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-3.75L6 21V4.75Z"/></svg></button></div></div>
+        </article>
+        <aside class="side-note"><div class="side-note-card"><span class="side-note-icon">✳</span><p class="side-note-kicker">YOUR LITTLE CORNER</p><p class="side-note-copy">No endless feed. Just a good one, then another.</p><div class="side-note-bottom"><span id="session-count">0 memes found</span><span class="side-note-star">✦</span></div></div><a class="scroll-cue" href="#keepers"><span class="scroll-cue-icon">↓</span><span>Scroll for your keepers</span></a></aside>
+      </div>
       <div class="reader-genres">
         <p class="reader-genres-label">PICK ANOTHER MOOD</p>
         <div class="mood-grid reader-mood-grid" id="reader-genre-container" role="group" aria-label="Switch meme category">
@@ -62,16 +72,6 @@
           <button class="mood-pill" data-value="sarcasm" aria-pressed="false"><span class="mood-emoji">〝</span><span>Sarcasm</span></button>
           <button class="mood-pill" data-value="cringememes" aria-pressed="false"><span class="mood-emoji">◇</span><span>Cringe</span></button>
         </div>
-      </div>
-      <div class="reader-topline"><div class="now-playing"><span class="live-dot"></span><span id="active-mood">DANK MODE</span><span class="topline-divider">/</span><span id="meme-number">YOUR NEXT SCROLL</span></div><button class="text-button" id="surprise-btn"><span aria-hidden="true">✳</span> Surprise me</button></div>
-      <div class="viewer-layout">
-        <div class="viewer-rail" aria-hidden="true"><span class="rail-label">MOOD</span><span class="rail-current" id="rail-current">01</span><span class="rail-line"></span><span class="rail-total">08</span><span class="rail-label rail-bottom">MEMECEPTION</span></div>
-        <article class="meme-card" id="meme-card" aria-live="polite">
-          <div class="meme-card-head"><span class="meme-label"><span class="label-dot"></span> INTERNET FINDS</span></div>
-          <div class="meme-image-container" id="meme-image-container"><div class="loading-overlay" id="loader"><span class="loader-orbit"></span><span>Finding your next one</span></div><img id="meme-img" src="" alt="Meme" /></div>
-          <div class="meme-details"><div class="meme-caption"><p class="caption-label">THE MEME</p><h2 id="meme-title">Your next favorite is out there.</h2><p class="meme-byline" id="credit">A new one is just a tap away.</p></div><div class="meme-tools"><button class="tool-button" id="share-btn" aria-label="Share meme" title="Share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m0 0L7 8m5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="tool-button save-btn" id="save-btn" aria-label="Save meme" title="Save this one"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-3.75L6 21V4.75Z"/></svg></button></div></div>
-        </article>
-        <aside class="side-note"><div class="side-note-card"><span class="side-note-icon">✳</span><p class="side-note-kicker">YOUR LITTLE CORNER</p><p class="side-note-copy">No endless feed. Just a good one, then another.</p><div class="side-note-bottom"><span id="session-count">0 memes found</span><span class="side-note-star">✦</span></div></div><a class="scroll-cue" href="#keepers"><span class="scroll-cue-icon">↓</span><span>Scroll for your keepers</span></a></aside>
       </div>
       <div class="reader-controls"><button class="skip-control" id="prev-btn" aria-label="Previous meme" title="Previous meme"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 5-7 7 7 7"/></svg></button><button class="next-button" id="fetch-btn"><span class="next-button-icon">↗</span><span>Another one</span><kbd>SPACE</kbd></button><button class="skip-control autoplay-button" id="autoplay-btn" aria-label="Start autoplay" title="Auto-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 10 6-10 6V6Z"/></svg></button><span class="keyboard-hint">or press <kbd>→</kbd></span></div>
     </section>
