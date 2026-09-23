@@ -2,134 +2,77 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memeception | Meme Generator</title>
-  <meta name="description" content="Browse memes by category and save your favorites in this browser." />
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
-
-  <!-- CSS -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f4f5f7" />
+  <meta name="description" content="Find your kind of funny. Browse memes by mood, save the good ones, and keep going." />
+  <title>Memeception — Find your kind of funny</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-
-
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4315629123147124"
-     crossorigin="anonymous"></script>
 </head>
-
 <body>
+  <a class="skip-link" href="#main">Skip to memes</a>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Memeception home"><span class="brand-mark">m</span><span>Memeception<span class="brand-dot">.</span></span></a>
+    <div class="topbar-right">
+      <span class="live-note"><span class="live-dot"></span><span id="session-note">Your corner of the internet</span></span>
+      <button class="icon-button saved-trigger" id="view-saved-btn" aria-label="Open saved memes" aria-controls="drawer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-3.75L6 21V4.75Z"/><path d="M9 7h6"/></svg>
+        <span>Saved</span><span class="saved-count" id="saved-count">0</span>
+      </button>
+      <button class="icon-button theme-button" id="theme-toggle" aria-label="Switch theme"><svg id="theme-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg></button>
+    </div>
+  </header>
 
-  <div class="app-wrapper">
-    <header>
-      <h1>Meme<span>ception</span></h1>
-      <div class="header-actions">
-        <button class="micro-btn" id="view-saved-btn" aria-label="View Saved">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-          </svg>
-        </button>
-        <button class="micro-btn" id="theme-toggle" aria-label="Toggle Theme">
-          <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-          <svg id="icon-moon" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </button>
+  <main id="main">
+    <section class="intro" id="top" aria-labelledby="page-title">
+      <div class="intro-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> A tiny break from the feed</p>
+        <h1 id="page-title">Find your kind<br />of <span>funny.</span></h1>
+        <p class="intro-subtitle">Pick a mood. Meet a meme. Keep the ones that get you.</p>
       </div>
-    </header>
-
-    <!-- Genre Selector -->
-    <div class="scroll-mask" id="genre-container">
-      <div class="pill active" data-value="dankmemes">Dank</div>
-      <div class="pill" data-value="ProgrammerHumor">Tech</div>
-      <div class="pill" data-value="wholesomememes">Wholesome</div>
-      <div class="pill" data-value="me_irl">Relatable</div>
-      <div class="pill" data-value="darkmemes">Dark</div>
-      <div class="pill" data-value="puns">Puns</div>
-      <div class="pill" data-value="sarcasm">Sarcasm</div>
-      <div class="pill" data-value="cringememes">Cringe</div>
-    </div>
-
-    <!-- Meme Viewer -->
-    <div class="card-scene">
-      <div class="meme-card" id="meme-card">
-        <div class="loading-overlay" id="loader">
-          <div class="spinner"></div>
-        </div>
-        <div class="meme-image-container">
-          <img id="meme-img" src="" alt="Meme content" />
-        </div>
-      </div>
-    </div>
-
-    <div class="credit" id="credit">
-      <!-- Credits inject here -->
-    </div>
-
-    <div class="actions">
-      <button class="main-btn" id="fetch-btn">Gimme Meme</button>
-      <button class="save-btn" id="save-btn" disabled>💾</button>
-    </div>
-
-    <!-- FAQ -->
-    <section class="seo-section">
-      <h2>Frequently Asked Questions</h2>
-
-      <details>
-        <summary>What is Memeception?</summary>
-        <div class="faq-answer">
-          A simple way to browse memes. Pick a category and tap Gimme Meme to load another one.
-        </div>
-      </details>
-
-      <details>
-        <summary>Where do the memes come from?</summary>
-        <div class="faq-answer">
-          The site gets memes from meme-api.com. Categories point to different subreddits. Sometimes a request or image may fail to load.
-        </div>
-      </details>
-
-      <details>
-        <summary>How do I save a meme?</summary>
-        <div class="faq-answer">
-          Tap the save button next to Gimme Meme. Open the bookmark button at the top to see saved memes. They're kept in this browser's local storage, so clearing site data removes them.
-        </div>
-      </details>
-
-      <details>
-        <summary>Can I change the theme?</summary>
-        <div class="faq-answer">
-          Yes. Use the button at the top to switch between light and dark mode.
-        </div>
-      </details>
+      <div class="intro-aside" aria-hidden="true"><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span class="orbit-core">:)</span><span class="orbit-spark spark-one">✳</span><span class="orbit-spark spark-two">✦</span></div>
     </section>
 
-    <div class="credit-bar">
-      Made by <a href="https://x.com/confid_sh" target="_blank" rel="noopener noreferrer">Confid</a>
-    </div>
-  </div>
+    <section class="mood-section" aria-labelledby="mood-title">
+      <div class="section-heading mood-heading"><div><p class="eyebrow">Choose your lane</p><h2 id="mood-title">What are we feeling?</h2></div><span class="mood-hint">Pick one to change the vibe <span aria-hidden="true">↗</span></span></div>
+      <div class="mood-grid" id="genre-container" role="group" aria-label="Meme categories">
+        <button class="mood-pill active" data-value="dankmemes" aria-pressed="true"><span class="mood-emoji">◉</span><span>Dank</span><span class="mood-arrow">↗</span></button>
+        <button class="mood-pill" data-value="ProgrammerHumor" aria-pressed="false"><span class="mood-emoji">⌘</span><span>Tech</span><span class="mood-arrow">↗</span></button>
+        <button class="mood-pill" data-value="wholesomememes" aria-pressed="false"><span class="mood-emoji">♡</span><span>Wholesome</span><span class="mood-arrow">↗</span></button>
+        <button class="mood-pill" data-value="me_irl" aria-pressed="false"><span class="mood-emoji">◎</span><span>Relatable</span><span class="mood-arrow">↗</span></button>
+        <button class="mood-pill" data-value="darkmemes" aria-pressed="false"><span class="mood-emoji">☾</span><span>Dark</span><span class="mood-arrow">↗</span></button>
+        <button class="mood-pill" data-value="puns" aria-pressed="false"><span class="mood-emoji">✳</span><span>Puns</span><span class="mood-arrow">↗</span></button>
+        <button class="mood-pill" data-value="sarcasm" aria-pressed="false"><span class="mood-emoji">〝</span><span>Sarcasm</span><span class="mood-arrow">↗</span></button>
+        <button class="mood-pill" data-value="cringememes" aria-pressed="false"><span class="mood-emoji">◇</span><span>Cringe</span><span class="mood-arrow">↗</span></button>
+      </div>
+    </section>
 
-  <!-- Saved Drawer -->
-  <div class="drawer" id="drawer">
-    <div class="drawer-header">
-      <h3>Saved Memes</h3>
-      <button class="close-drawer" id="close-drawer">Close</button>
-    </div>
-    <div class="saved-grid" id="saved-grid">
-      <!-- Saved Items -->
-    </div>
-  </div>
+    <section class="reader-section" id="reader" aria-label="Meme viewer">
+      <div class="reader-topline"><div class="now-playing"><span class="live-dot"></span><span id="active-mood">DANK MODE</span><span class="topline-divider">/</span><span id="meme-number">YOUR NEXT SCROLL</span></div><button class="text-button" id="surprise-btn"><span aria-hidden="true">✳</span> Surprise me</button></div>
+      <div class="viewer-layout">
+        <div class="viewer-rail" aria-hidden="true"><span class="rail-label">MOOD</span><span class="rail-current" id="rail-current">01</span><span class="rail-line"></span><span class="rail-total">08</span><span class="rail-label rail-bottom">MEMECEPTION</span></div>
+        <article class="meme-card" id="meme-card" aria-live="polite">
+          <div class="meme-card-head"><span class="meme-label"><span class="label-dot"></span> INTERNET FINDS</span><span class="meme-source" id="meme-source">Loading your first meme</span></div>
+          <div class="meme-image-container" id="meme-image-container"><div class="loading-overlay" id="loader"><span class="loader-orbit"></span><span>Finding your next one</span></div><img id="meme-img" src="" alt="Meme" /></div>
+          <div class="meme-details"><div class="meme-caption"><p class="caption-label">THE MEME</p><h2 id="meme-title">Your next favorite is out there.</h2><p class="meme-byline" id="credit">A new one is just a tap away.</p></div><div class="meme-tools"><button class="tool-button" id="share-btn" aria-label="Share meme" title="Share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m0 0L7 8m5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="tool-button save-btn" id="save-btn" aria-label="Save meme" title="Save this one"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-3.75L6 21V4.75Z"/></svg></button></div></div>
+        </article>
+        <aside class="side-note"><div class="side-note-card"><span class="side-note-icon">✳</span><p class="side-note-kicker">YOUR LITTLE CORNER</p><p class="side-note-copy">No endless feed. Just a good one, then another.</p><div class="side-note-bottom"><span id="session-count">0 memes found</span><span class="side-note-star">✦</span></div></div><a class="scroll-cue" href="#keepers"><span class="scroll-cue-icon">↓</span><span>Scroll for your keepers</span></a></aside>
+      </div>
+      <div class="reader-controls"><button class="skip-control" id="prev-btn" aria-label="Previous meme" title="Previous meme"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 5-7 7 7 7"/></svg></button><button class="next-button" id="fetch-btn"><span class="next-button-icon">↗</span><span>Another one</span><kbd>SPACE</kbd></button><button class="skip-control autoplay-button" id="autoplay-btn" aria-label="Start autoplay" title="Auto-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 10 6-10 6V6Z"/></svg></button><span class="keyboard-hint">or press <kbd>→</kbd></span></div>
+    </section>
 
-  <!-- App JS -->
+    <section class="keepers-section" id="keepers" aria-labelledby="keepers-title"><div class="keepers-heading"><div><p class="eyebrow">The ones worth keeping</p><h2 id="keepers-title">Your keepers<span class="keepers-total" id="keepers-total">0</span></h2></div><button class="text-button" id="open-saved-inline">See all saved <span aria-hidden="true">↗</span></button></div><div class="keepers-grid" id="keepers-preview"><div class="empty-keeper"><span class="empty-keeper-mark">+</span><div><strong>Save the ones you love.</strong><p>They'll show up here, ready for a rewatch.</p></div></div></div></section>
+
+    <section class="how-section" aria-label="How Memeception works"><div class="how-step"><span>01</span><p>Pick a mood</p></div><span class="how-arrow">→</span><div class="how-step"><span>02</span><p>Find a laugh</p></div><span class="how-arrow">→</span><div class="how-step"><span>03</span><p>Keep the good ones</p></div></section>
+  </main>
+
+  <footer class="site-footer"><a class="brand footer-brand" href="#top"><span class="brand-mark">m</span><span>Memeception<span class="brand-dot">.</span></span></a><p>A little less scrolling. A little more laughing.</p><a href="https://x.com/confid_sh" target="_blank" rel="noopener noreferrer">Made by Confid ↗</a></footer>
+
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <aside class="drawer" id="drawer" aria-labelledby="drawer-title" aria-hidden="true"><div class="drawer-header"><div><p class="eyebrow">Your personal collection</p><h2 id="drawer-title">Saved memes <span id="drawer-count">0</span></h2></div><button class="drawer-close" id="close-drawer" aria-label="Close saved memes">×</button></div><div class="saved-grid" id="saved-grid"></div><p class="drawer-footnote">Saved on this device only.</p></aside>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="script.js"></script>
 </body>
 </html>
