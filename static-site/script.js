@@ -9,7 +9,7 @@
   const storeKey = 'savedMemes';
   const $ = (selector) => document.querySelector(selector);
   const els = {
-    body: document.body, genre: $('#genre-container'), img: $('#meme-img'),
+    body: document.body, genre: $('#genre-container'), readerGenre: $('#reader-genre-container'), img: $('#meme-img'),
     imageContainer: $('#meme-image-container'), loader: $('#loader'),
     card: $('#meme-card'), section: $('.reader-section'), fetch: $('#fetch-btn'),
     surprise: $('#surprise-btn'), prev: $('#prev-btn'), save: $('#save-btn'),
@@ -18,7 +18,7 @@
     savedCount: $('#saved-count'), keepersTotal: $('#keepers-total'),
     drawerCount: $('#drawer-count'), drawer: $('#drawer'), backdrop: $('#drawer-backdrop'),
     savedGrid: $('#saved-grid'), preview: $('#keepers-preview'), close: $('#close-drawer'),
-    toast: $('#toast'), source: $('#meme-source'), title: $('#meme-title'),
+    toast: $('#toast'), title: $('#meme-title'),
     credit: $('#credit'), activeMood: $('#active-mood'), rail: $('#rail-current'),
     number: $('#meme-number'), sessionCount: $('#session-count'),
     autoplay: $('#autoplay-btn')
@@ -60,10 +60,12 @@
     if (!selected) return;
     state.genre = selected[0];
     state.mood = selected[1];
-    [...els.genre.querySelectorAll('.mood-pill')].forEach((button) => {
-      const active = button.dataset.value === state.genre;
-      button.classList.toggle('active', active);
-      button.setAttribute('aria-pressed', String(active));
+    [els.genre, els.readerGenre].forEach((group) => {
+      [...group.querySelectorAll('.mood-pill')].forEach((button) => {
+        const active = button.dataset.value === state.genre;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
     });
     const index = categories.findIndex(([genre]) => genre === state.genre);
     els.activeMood.textContent = `${state.mood.toUpperCase()} MODE`;
@@ -108,7 +110,6 @@
     const sources = [`https://meme-api.com/gimme/${encodeURIComponent(chosen)}`, `https://meme-api.com/gimme/${fallbackGenre}`];
     let meme = null;
     let imageUrl = '';
-    let usedFallback = false;
     for (let i = 0; i < sources.length; i++) {
       try {
         const candidate = await getMeme(sources[i], controller);
@@ -116,7 +117,6 @@
         await preloadImage(candidate.url);
         meme = candidate;
         imageUrl = candidate.url;
-        usedFallback = i > 0;
         break;
       } catch (error) {
         if (requestId !== state.requestId) return;
@@ -128,7 +128,6 @@
       setLoading(false);
       els.img.src = fallbackImage;
       els.img.classList.add('loaded');
-      els.source.textContent = 'A little internet hiccup';
       els.title.textContent = 'That meme got away.';
       els.credit.textContent = 'Give it another go in a moment.';
       state.current = null;
@@ -146,7 +145,6 @@
     }
     els.img.src = imageUrl;
     els.img.alt = enriched.title || `Meme from r/${enriched.subreddit || 'memes'}`;
-    els.source.textContent = usedFallback ? `r/${meme.subreddit || fallbackGenre} · surprise find` : `r/${meme.subreddit || 'memes'}`;
     els.title.textContent = enriched.title || 'A meme for the moment.';
     const author = document.createElement('span');
     author.textContent = meme.author ? `Shared by u/${meme.author}` : 'A find from the internet';
@@ -241,7 +239,6 @@
     els.img.alt = meme.title || 'Saved meme';
     els.img.classList.add('loaded');
     els.title.textContent = meme.title || 'A keeper.';
-    els.source.textContent = `r/${meme.subreddit || 'memes'} · saved`;
     const link = document.createElement('a'); link.href = /^https?:\/\//i.test(meme.postLink || '') ? meme.postLink : `https://www.reddit.com/r/${encodeURIComponent(meme.subreddit || 'memes')}`; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = `r/${meme.subreddit || 'memes'}`;
     els.credit.replaceChildren(link, document.createTextNode(meme.author ? ` · Shared by u/${meme.author}` : ' · Saved on this device'));
     setLoading(false); updateActionState(); closeDrawer(); $('#reader').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -272,7 +269,6 @@
     state.current = meme;
     els.img.src = meme.url; els.img.alt = meme.title || 'Meme'; els.img.classList.add('loaded');
     els.title.textContent = meme.title || 'A meme for the moment.';
-    els.source.textContent = `r/${meme.subreddit || 'memes'} · back in time`;
     const link = document.createElement('a'); link.href = /^https?:\/\//i.test(meme.postLink || '') ? meme.postLink : `https://www.reddit.com/r/${encodeURIComponent(meme.subreddit || 'memes')}`; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = `r/${meme.subreddit || 'memes'}`;
     els.credit.replaceChildren(link, document.createTextNode(` · Shared by u/${meme.author || 'internet'}`));
     els.number.textContent = `${String(state.historyIndex + 1).padStart(2, '0')} IN THIS SESSION`;
@@ -293,7 +289,25 @@
     els.theme.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
     els.themeIcon.innerHTML = isDark ? '<path d="M20.8 14.3A8.6 8.6 0 0 1 9.7 3.2 8.8 8.8 0 1 0 20.8 14.3Z"/>' : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>';
   }
-  els.genre.addEventListener('click', (event) => { const button = event.target.closest('.mood-pill'); if (button) setCategory(button.dataset.value); });
+  [els.genre, els.readerGenre].forEach((group) => {
+    group.addEventListener('click', (event) => {
+      const button = event.target.closest('.mood-pill');
+      if (button) setCategory(button.dataset.value);
+    });
+    group.querySelectorAll('.mood-pill').forEach((button, index) => button.style.setProperty('--pill-index', index));
+  });
+  if ('IntersectionObserver' in window) {
+    [els.genre, els.readerGenre].forEach((group) => {
+      group.classList.add('reveal-ready');
+      const revealObserver = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          group.classList.add('is-visible');
+          revealObserver.disconnect();
+        }
+      }, { threshold: 0.2, rootMargin: '0px 0px -6% 0px' });
+      revealObserver.observe(group);
+    });
+  }
   els.fetch.addEventListener('click', () => loadMeme());
   els.surprise.addEventListener('click', () => loadMeme({ random: true }));
   els.prev.addEventListener('click', previousMeme);
