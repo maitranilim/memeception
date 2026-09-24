@@ -571,7 +571,7 @@
   /* ------------------------------------------------------------------ */
   /* Dialog plumbing                                                     */
   /* ------------------------------------------------------------------ */
-  for (const d of document.querySelectorAll('dialog')) {
+  for (const d of document.querySelectorAll('dialog:not(#age-gate)')) {
     d.addEventListener('click', (ev) => { if (ev.target === d) d.close(); }); // backdrop click
     d.addEventListener('close', () => { if (el.toasts.parentElement === d) document.body.append(el.toasts); });
     d.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => d.close()));
@@ -720,9 +720,29 @@
     el.coach.hidden = true;
     store.setRaw('mc_coached', '1');
   }
-  if (!store.raw('mc_coached')) {
+  function showCoach() {
+    if (store.raw('mc_coached')) return;
     el.coach.hidden = false;
     setTimeout(dismissCoach, 9000);
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 18+ notice (shown once; nothing loads until it's confirmed)         */
+  /* ------------------------------------------------------------------ */
+  function ageGate(start) {
+    if (store.raw('mc_age_ok')) { start(); return; }
+    const d = $('#age-gate');
+    let ok = false;
+    d.addEventListener('cancel', (ev) => ev.preventDefault()); // Esc can't skip it
+    // Browsers may force-close a modal on repeated Esc; reopen until answered.
+    d.addEventListener('close', () => { if (!ok) d.showModal(); });
+    $('#age-yes').addEventListener('click', () => {
+      ok = true;
+      store.setRaw('mc_age_ok', '1');
+      d.close();
+      start();
+    }, { once: true });
+    d.showModal();
   }
 
   /* ------------------------------------------------------------------ */
@@ -780,7 +800,10 @@
   renderChips();
   applyTheme(themePref());
   persistSaved();
-  setGenre(location.hash.slice(1) || 'dank', { force: true });
-  // Warm the next categories in the background once the first memes are in.
-  setTimeout(() => ['tech', 'relatable'].forEach((g) => ensureQueue(g, 4).catch(() => {})), 2500);
+  ageGate(() => {
+    setGenre(location.hash.slice(1) || 'dank', { force: true });
+    showCoach();
+    // Warm the next categories in the background once the first memes are in.
+    setTimeout(() => ['tech', 'relatable'].forEach((g) => ensureQueue(g, 4).catch(() => {})), 2500);
+  });
 })();

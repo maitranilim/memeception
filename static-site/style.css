@@ -416,6 +416,33 @@ dialog::backdrop { background: var(--backdrop); backdrop-filter: blur(4px); }
 .empty { padding: 28px 8px; text-align: center; color: var(--muted); }
 .empty[hidden] { display: none; }
 
+/* 18+ notice: centered card, opaque backdrop so nothing shows behind it */
+.age-gate {
+  width: min(420px, calc(100% - 32px));
+  margin: auto;
+  padding: 24px 20px 20px;
+  border: 2px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: 0 6px 0 var(--press);
+  text-align: center;
+}
+.age-gate[open] { animation: age-pop 320ms var(--ease-pop); }
+@keyframes age-pop { from { transform: scale(0.92); opacity: 0; } }
+.age-gate::backdrop { background: rgba(13, 13, 17, 0.88); backdrop-filter: blur(8px); }
+.age-badge {
+  display: inline-grid; place-items: center;
+  width: 64px; height: 64px; margin-bottom: 12px;
+  border: 2px solid var(--line); border-radius: 50%;
+  background: var(--accent); color: var(--on-accent);
+  box-shadow: 0 4px 0 var(--press);
+  font-family: var(--font-display); font-size: 1.35rem; font-weight: 800;
+}
+.age-gate h2 { font-family: var(--font-display); font-size: 1.45rem; letter-spacing: -0.02em; margin-bottom: 8px; }
+.age-gate #age-text { color: var(--muted); line-height: 1.5; margin-bottom: 18px; }
+.age-actions { display: flex; gap: 10px; }
+.age-actions .key { flex: 1; padding: 12px 14px; color: var(--ink); }
+.age-actions .age-yes { background: var(--accent); color: var(--on-accent); }
+
 .panel { padding: 14px 0; border-top: 2px dashed var(--line); }
 .panel h3 { font-family: var(--font-display); font-size: 1.05rem; margin-bottom: 10px; }
 .switch-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; cursor: pointer; }

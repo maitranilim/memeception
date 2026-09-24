@@ -191,6 +191,17 @@
     <p class="fine">Made by <a href="https://x.com/confid_sh" target="_blank" rel="noopener noreferrer">Confid</a></p>
   </dialog>
 
+  <!-- One-time 18+ notice (answer remembered in localStorage) -->
+  <dialog id="age-gate" class="age-gate" aria-labelledby="age-title" aria-describedby="age-text">
+    <p class="age-badge" aria-hidden="true">18+</p>
+    <h2 id="age-title">Are you 18 or older?</h2>
+    <p id="age-text">Memeception shows public memes from Reddit, and some may contain adult humor, strong language or NSFW content. Continue only if you're at least 18.</p>
+    <div class="age-actions">
+      <button class="key age-yes" id="age-yes">Yes, I'm 18+</button>
+      <a class="key age-no" href="https://www.google.com/" rel="noopener noreferrer">Leave</a>
+    </div>
+  </dialog>
+
   <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 
   <template id="tpl-slide">
