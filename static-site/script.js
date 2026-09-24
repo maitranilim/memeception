@@ -735,14 +735,16 @@
     let ok = false;
     d.addEventListener('cancel', (ev) => ev.preventDefault()); // Esc can't skip it
     // Browsers may force-close a modal on repeated Esc; reopen until answered.
-    d.addEventListener('close', () => { if (!ok) d.showModal(); });
+    // Focus the dialog, not the Yes button, so a habitual Space can't confirm it.
+    const show = () => { d.showModal(); d.focus(); };
+    d.addEventListener('close', () => { if (!ok) show(); });
     $('#age-yes').addEventListener('click', () => {
       ok = true;
       store.setRaw('mc_age_ok', '1');
       d.close();
       start();
     }, { once: true });
-    d.showModal();
+    show();
   }
 
   /* ------------------------------------------------------------------ */

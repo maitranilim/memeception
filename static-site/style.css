@@ -428,6 +428,7 @@ dialog::backdrop { background: var(--backdrop); backdrop-filter: blur(4px); }
 }
 .age-gate[open] { animation: age-pop 320ms var(--ease-pop); }
 @keyframes age-pop { from { transform: scale(0.92); opacity: 0; } }
+.age-gate:focus { outline: none; }
 .age-gate::backdrop { background: rgba(13, 13, 17, 0.88); backdrop-filter: blur(8px); }
 .age-badge {
   display: inline-grid; place-items: center;
