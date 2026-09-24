@@ -1,5 +1,9 @@
-# Live site files
+# Site files
 
-This folder is deployed to [memeception.vercel.app](https://memeception.vercel.app). It contains the HTML, CSS and JavaScript for the live site. Serve this folder with a local web server to run it locally.
+This folder is the whole site: `index.html`, `style.css` and `script.js`. No build step and no packages.
 
-Memes come from meme-api.com. Saved memes and the theme choice are stored in this browser's local storage.
+Vercel uses this folder as the project root. `main` goes to memeception.vercel.app, and every other branch gets its own preview link.
+
+Memes come from meme-api.com. Saved memes, the theme and the Safe mode setting are kept in your browser's local storage.
+
+To run it locally, serve this folder with any web server, for example `python -m http.server 8080`.

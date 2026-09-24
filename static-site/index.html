@@ -1,135 +1,226 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Memeception | Meme Generator</title>
-  <meta name="description" content="Browse memes by category and save your favorites in this browser." />
+  <meta name="description" content="An endless, scrollable meme feed. Pick a vibe, scroll for the next meme, double-tap to save your favorites." />
+  <meta name="theme-color" content="#ff7a45" />
+  <meta property="og:title" content="Memeception" />
+  <meta property="og:description" content="Scroll. Laugh. Go one level deeper." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://memeception.vercel.app/" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='4' width='56' height='56' rx='14' fill='%23ff7a45' stroke='%2316161a' stroke-width='5'/%3E%3Crect x='18' y='18' width='28' height='28' rx='7' fill='%23fffdf7' stroke='%2316161a' stroke-width='4'/%3E%3Crect x='27' y='27' width='10' height='10' rx='3' fill='%2316161a'/%3E%3C/svg%3E" />
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <!-- Apply the saved (or system) theme before first paint so there is no light flash in dark mode -->
+  <script>
+    (function () {
+      var pref = 'system';
+      try { pref = localStorage.getItem('theme') || 'system'; } catch (e) {}
+      var dark = pref === 'dark' || (pref === 'system' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    })();
+  </script>
 
-  <!-- CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://meme-api.com" crossorigin />
+  <link rel="preconnect" href="https://i.redd.it" />
+  <link rel="preconnect" href="https://preview.redd.it" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 
-
+  <!-- Unchanged from v2: AdSense loader (auto ads are configured in the AdSense dashboard) -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4315629123147124"
      crossorigin="anonymous"></script>
 </head>
 
 <body>
+  <!-- Icon sprite -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></symbol>
+  </svg>
 
-  <div class="app-wrapper">
-    <header>
-      <h1>Meme<span>ception</span></h1>
-      <div class="header-actions">
-        <button class="micro-btn" id="view-saved-btn" aria-label="View Saved">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-          </svg>
+  <a class="skip-link" href="#feed">Skip to memes</a>
+
+  <header class="topbar">
+    <a class="brand" href="#" id="brand" aria-label="Memeception, back to the top of the feed">Meme<span>ception</span></a>
+
+    <div class="depth" id="depth-chip" title="Memes seen this session" aria-live="off">
+      <span class="depth-label">Depth</span>
+      <b id="depth">0</b>
+    </div>
+
+    <div class="top-actions">
+      <button class="key icon-btn" id="saved-btn" aria-label="Saved memes" title="Saved memes (B)">
+        <svg class="icon"><use href="#i-bookmark"/></svg>
+        <span class="badge" id="saved-count" hidden>0</span>
+      </button>
+      <button class="key icon-btn" id="theme-btn" aria-label="Toggle dark mode" title="Theme (T)">
+        <svg class="icon only-light"><use href="#i-moon"/></svg>
+        <svg class="icon only-dark"><use href="#i-sun"/></svg>
+      </button>
+      <button class="key icon-btn" id="info-btn" aria-label="About, settings and shortcuts" title="About & settings (?)">
+        <svg class="icon"><use href="#i-info"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Category bar: horizontal chips on phones, vertical sidebar on wide screens -->
+  <nav class="genres" aria-label="Meme categories">
+    <p class="side-title">Pick a vibe</p>
+    <div class="genre-list" id="genres" role="tablist"></div>
+    <p class="side-hint"><kbd>J</kbd>/<kbd>K</kbd> scroll · <kbd>S</kbd> save · <kbd>?</kbd> all keys</p>
+  </nav>
+
+  <main id="feed" class="feed" aria-label="Meme feed" tabindex="-1"></main>
+
+  <aside class="upnext" aria-label="Up next">
+    <p class="side-title">Up next</p>
+    <ol id="upnext-list" class="upnext-list"></ol>
+  </aside>
+
+  <div class="coach" id="coach" hidden>
+    <svg class="icon"><use href="#i-down"/></svg>
+    <span><b>Scroll</b> for the next meme · <b>double-tap</b> to save</span>
+  </div>
+
+  <!-- Saved memes sheet -->
+  <dialog id="saved-sheet" class="sheet" aria-labelledby="saved-title">
+    <div class="sheet-head">
+      <h2 id="saved-title">Saved <span class="muted" id="saved-total"></span></h2>
+      <div class="sheet-tools">
+        <button class="key small" id="export-btn" title="Download your saved memes as a JSON file">
+          <svg class="icon"><use href="#i-download"/></svg> Export
         </button>
-        <button class="micro-btn" id="theme-toggle" aria-label="Toggle Theme">
-          <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-          <svg id="icon-moon" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
+        <button class="key icon-btn small" data-close aria-label="Close">
+          <svg class="icon"><use href="#i-x"/></svg>
         </button>
       </div>
-    </header>
-
-    <!-- Genre Selector -->
-    <div class="scroll-mask" id="genre-container">
-      <div class="pill active" data-value="dankmemes">Dank</div>
-      <div class="pill" data-value="ProgrammerHumor">Tech</div>
-      <div class="pill" data-value="wholesomememes">Wholesome</div>
-      <div class="pill" data-value="me_irl">Relatable</div>
-      <div class="pill" data-value="darkmemes">Dark</div>
-      <div class="pill" data-value="puns">Puns</div>
-      <div class="pill" data-value="sarcasm">Sarcasm</div>
-      <div class="pill" data-value="cringememes">Cringe</div>
     </div>
+    <div class="saved-grid" id="saved-grid"></div>
+    <p class="empty" id="saved-empty">Nothing saved yet. <b>Double-tap</b> a meme (or press <kbd>S</kbd>) to keep it here.</p>
+    <p class="fine">Saved memes live in this browser only. Clearing site data removes them, so export if you care.</p>
+  </dialog>
 
-    <!-- Meme Viewer -->
-    <div class="card-scene">
-      <div class="meme-card" id="meme-card">
-        <div class="loading-overlay" id="loader">
-          <div class="spinner"></div>
-        </div>
-        <div class="meme-image-container">
-          <img id="meme-img" src="" alt="Meme content" />
-        </div>
+  <!-- Full-size viewer -->
+  <dialog id="lightbox" class="lightbox" aria-label="Full size meme">
+    <div class="lb-scroll" id="lb-scroll">
+      <img id="lb-img" alt="" />
+    </div>
+    <div class="lb-bar">
+      <div class="lb-text">
+        <p class="lb-title" id="lb-title"></p>
+        <p class="lb-meta" id="lb-meta"></p>
+      </div>
+      <div class="lb-actions">
+        <button class="key icon-btn" id="lb-save" aria-label="Save" aria-pressed="false"><svg class="icon"><use href="#i-bookmark"/></svg></button>
+        <a class="key icon-btn" id="lb-open" target="_blank" rel="noopener noreferrer" aria-label="Open on Reddit"><svg class="icon"><use href="#i-external"/></svg></a>
+        <button class="key icon-btn" data-close aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button>
       </div>
     </div>
+  </dialog>
 
-    <div class="credit" id="credit">
-      <!-- Credits inject here -->
+  <!-- About / settings / shortcuts / FAQ -->
+  <dialog id="info-sheet" class="sheet" aria-labelledby="info-title">
+    <div class="sheet-head">
+      <h2 id="info-title">Memeception</h2>
+      <button class="key icon-btn small" data-close aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button>
     </div>
 
-    <div class="actions">
-      <button class="main-btn" id="fetch-btn">Gimme Meme</button>
-      <button class="save-btn" id="save-btn" disabled>💾</button>
-    </div>
+    <section class="panel">
+      <h3>Settings</h3>
+      <label class="switch-row">
+        <span><b>Safe mode</b><br /><small class="muted">Hide posts Reddit marks NSFW</small></span>
+        <input type="checkbox" id="safe-toggle" role="switch" checked />
+      </label>
+      <div class="seg" role="radiogroup" aria-label="Theme">
+        <label><input type="radio" name="theme" value="system" /> <span>System</span></label>
+        <label><input type="radio" name="theme" value="light" /> <span>Light</span></label>
+        <label><input type="radio" name="theme" value="dark" /> <span>Dark</span></label>
+      </div>
+    </section>
 
-    <!-- FAQ -->
-    <section class="seo-section">
-      <h2>Frequently Asked Questions</h2>
+    <section class="panel shortcuts">
+      <h3>Shortcuts</h3>
+      <dl class="keys">
+        <dt><kbd>J</kbd> <kbd>↓</kbd> <kbd>Space</kbd></dt><dd>Next meme</dd>
+        <dt><kbd>K</kbd> <kbd>↑</kbd></dt><dd>Previous meme</dd>
+        <dt><kbd>S</kbd></dt><dd>Save / unsave</dd>
+        <dt><kbd>F</kbd></dt><dd>Full size</dd>
+        <dt><kbd>O</kbd></dt><dd>Open on Reddit</dd>
+        <dt><kbd>1</kbd>–<kbd>9</kbd></dt><dd>Switch category</dd>
+        <dt><kbd>B</kbd></dt><dd>Saved memes</dd>
+        <dt><kbd>T</kbd></dt><dd>Light / dark</dd>
+        <dt><kbd>Esc</kbd></dt><dd>Close</dd>
+      </dl>
+    </section>
 
+    <section class="panel faq">
+      <h3>Frequently asked questions</h3>
       <details>
         <summary>What is Memeception?</summary>
-        <div class="faq-answer">
-          A simple way to browse memes. Pick a category and tap Gimme Meme to load another one.
-        </div>
+        <p>An endless meme feed. Pick a category, then scroll (or press J) for the next meme. Every meme you see takes you one level deeper; the Depth counter keeps score.</p>
       </details>
-
       <details>
         <summary>Where do the memes come from?</summary>
-        <div class="faq-answer">
-          The site gets memes from meme-api.com. Categories point to different subreddits. Sometimes a request or image may fail to load.
-        </div>
+        <p>From meme-api.com, which pulls public posts from Reddit. Each category maps to one or more subreddits. If a subreddit is closed, the category falls back to a similar one.</p>
       </details>
-
       <details>
         <summary>How do I save a meme?</summary>
-        <div class="faq-answer">
-          Tap the save button next to Gimme Meme. Open the bookmark button at the top to see saved memes. They're kept in this browser's local storage, so clearing site data removes them.
-        </div>
+        <p>Double-tap the image, tap the bookmark, or press S. Open the bookmark at the top to see them. They're stored in this browser's local storage, so use Export to keep a copy.</p>
       </details>
-
       <details>
         <summary>Can I change the theme?</summary>
-        <div class="faq-answer">
-          Yes. Use the button at the top to switch between light and dark mode.
-        </div>
+        <p>Yes. It follows your device by default. Use the moon/sun button or the setting above to choose.</p>
       </details>
     </section>
 
-    <div class="credit-bar">
-      Made by <a href="https://x.com/confid_sh" target="_blank" rel="noopener noreferrer">Confid</a>
-    </div>
-  </div>
+    <p class="fine">Made by <a href="https://x.com/confid_sh" target="_blank" rel="noopener noreferrer">Confid</a></p>
+  </dialog>
 
-  <!-- Saved Drawer -->
-  <div class="drawer" id="drawer">
-    <div class="drawer-header">
-      <h3>Saved Memes</h3>
-      <button class="close-drawer" id="close-drawer">Close</button>
-    </div>
-    <div class="saved-grid" id="saved-grid">
-      <!-- Saved Items -->
-    </div>
-  </div>
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 
-  <!-- App JS -->
+  <template id="tpl-slide">
+    <article class="slide">
+      <div class="card">
+        <header class="meta">
+          <a class="sub" target="_blank" rel="noopener noreferrer"></a>
+          <span class="author"></span>
+          <span class="ups"><svg class="icon"><use href="#i-up"/></svg><b></b></span>
+        </header>
+        <h2 class="title"></h2>
+        <div class="media">
+          <img class="ambient" alt="" aria-hidden="true" decoding="async" />
+          <img class="img" alt="" decoding="async" />
+          <div class="veil" hidden><button class="key small veil-btn"></button></div>
+          <div class="broken" hidden><p>This image didn't load.</p><button class="key small skip-btn">Skip it</button></div>
+          <svg class="burst icon" aria-hidden="true"><use href="#i-bookmark"/></svg>
+        </div>
+        <div class="actions">
+          <button class="key act save" aria-pressed="false" aria-label="Save"><svg class="icon"><use href="#i-bookmark"/></svg><span>Save</span></button>
+          <button class="key act share" aria-label="Share"><svg class="icon"><use href="#i-share"/></svg><span>Share</span></button>
+          <button class="key act full" aria-label="Full size"><svg class="icon"><use href="#i-expand"/></svg><span>Full</span></button>
+          <a class="key act open" target="_blank" rel="noopener noreferrer" aria-label="Open on Reddit"><svg class="icon"><use href="#i-external"/></svg><span>Reddit</span></a>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <noscript><p class="noscript">Memeception needs JavaScript to load memes.</p></noscript>
+
   <script src="script.js"></script>
 </body>
 </html>
