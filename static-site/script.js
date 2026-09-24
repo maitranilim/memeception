@@ -342,7 +342,29 @@
   els.savedOpen.addEventListener('click', openDrawer); els.savedInline.addEventListener('click', openDrawer);
   els.close.addEventListener('click', closeDrawer); els.backdrop.addEventListener('click', closeDrawer);
   els.autoplay.addEventListener('click', toggleAutoplay);
+  // One-time 18+ notice: the first meme loads only after it's confirmed.
+  function ageGate(start) {
+    let ok = null;
+    try { ok = localStorage.getItem('mc_age_ok'); } catch { /* storage blocked */ }
+    const gate = $('#age-gate');
+    if (ok || !gate || !gate.showModal) { start(); return; }
+    let confirmed = false;
+    gate.addEventListener('cancel', (event) => event.preventDefault()); // Esc can't skip it
+    // Browsers may force-close a modal on repeated Esc; reopen until answered.
+    // Focus the dialog, not the Yes button, so a habitual Space can't confirm it.
+    const show = () => { gate.showModal(); gate.focus(); };
+    gate.addEventListener('close', () => { if (!confirmed) show(); });
+    $('#age-yes').addEventListener('click', () => {
+      confirmed = true;
+      try { localStorage.setItem('mc_age_ok', '1'); } catch { /* ignore */ }
+      gate.close();
+      start();
+    }, { once: true });
+    show();
+  }
+
   document.addEventListener('keydown', (event) => {
+    if (document.querySelector('#age-gate[open]')) return; // no shortcuts behind the 18+ notice
     const tag = event.target.tagName;
     if (tag === 'INPUT' || tag === 'TEXTAREA' || event.target.isContentEditable) return;
     if (event.key === 'Escape' && els.drawer.classList.contains('open')) { closeDrawer(); return; }
@@ -357,5 +379,5 @@
   setTheme(localStorage.getItem('theme') === 'dark');
   updateActionState();
   setLoading(true, 'Finding your first one…');
-  loadMeme();
+  ageGate(loadMeme);
 })();
