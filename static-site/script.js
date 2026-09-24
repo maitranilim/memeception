@@ -20,8 +20,8 @@ const els = {
 // Ensure critical elements exist before running logic
 if (els.fetchBtn && els.img) {
 
-    // Initialize
-    fetchMeme();
+    // Initialize (after the 18+ notice is confirmed)
+    ageGate(fetchMeme);
 
     // Event Listeners
     els.fetchBtn.addEventListener('click', () => {
@@ -53,6 +53,27 @@ if (els.fetchBtn && els.img) {
     els.saveBtn.innerText = '✅';
     setTimeout(() => els.saveBtn.innerText = '💾', 1000);
     });
+}
+
+// --- 18+ NOTICE ---
+// Shown once per browser; memes load only after it's confirmed.
+function ageGate(start) {
+  let ok = null;
+  try { ok = localStorage.getItem('mc_age_ok'); } catch (e) { /* storage blocked */ }
+  const gate = document.getElementById('age-gate');
+  if (ok || !gate || !gate.showModal) return start();
+
+  let confirmed = false;
+  gate.addEventListener('cancel', (e) => e.preventDefault()); // Esc can't skip it
+  // Browsers may force-close a modal on repeated Esc; reopen until answered.
+  gate.addEventListener('close', () => { if (!confirmed) gate.showModal(); });
+  document.getElementById('age-yes').addEventListener('click', () => {
+    confirmed = true;
+    try { localStorage.setItem('mc_age_ok', '1'); } catch (e) { /* ignore */ }
+    gate.close();
+    start();
+  }, { once: true });
+  gate.showModal();
 }
 
 // --- FETCH ---
