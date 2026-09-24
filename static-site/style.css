@@ -277,6 +277,7 @@ h1 span { color: var(--accent); }
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   text-align: center;
 }
+.age-gate:focus { outline: none; }
 .age-gate::backdrop { background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(8px); }
 .age-gate[open] { animation: age-pop 0.3s var(--ease-elastic); }
 @keyframes age-pop { from { transform: scale(0.92); opacity: 0; } }

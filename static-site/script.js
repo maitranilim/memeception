@@ -66,14 +66,16 @@ function ageGate(start) {
   let confirmed = false;
   gate.addEventListener('cancel', (e) => e.preventDefault()); // Esc can't skip it
   // Browsers may force-close a modal on repeated Esc; reopen until answered.
-  gate.addEventListener('close', () => { if (!confirmed) gate.showModal(); });
+  // Focus the dialog, not the Yes button, so a stray Space or Enter can't confirm it.
+  const show = () => { gate.showModal(); gate.focus(); };
+  gate.addEventListener('close', () => { if (!confirmed) show(); });
   document.getElementById('age-yes').addEventListener('click', () => {
     confirmed = true;
     try { localStorage.setItem('mc_age_ok', '1'); } catch (e) { /* ignore */ }
     gate.close();
     start();
   }, { once: true });
-  gate.showModal();
+  show();
 }
 
 // --- FETCH ---
