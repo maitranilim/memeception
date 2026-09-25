@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "description": "A fast, keyboard-driven meme reader built on Next.js.",
+  "author": "maitranilim <maitranilim@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maitranilim/memeception.git"
+  },
+  "homepage": "https://memeception.vercel.app",
   "license": "MIT",
   "scripts": {
     "dev": "next dev",

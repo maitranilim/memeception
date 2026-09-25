@@ -1,6 +1,3 @@
-/* -------------------------------------------------------------------------- */
-/* MEME LOGIC (CORE)                                                          */
-/* -------------------------------------------------------------------------- */
 const state = {
   genre: 'dankmemes',
   currentMeme: null,
@@ -17,13 +14,12 @@ const els = {
   savedGrid: document.getElementById('saved-grid')
 };
 
-// Ensure critical elements exist before running logic
+// bail out if the page markup is missing
 if (els.fetchBtn && els.img) {
 
-    // Initialize (after the 18+ notice is confirmed)
+    // wait for the 18+ notice before loading anything
     ageGate(fetchMeme);
 
-    // Event Listeners
     els.fetchBtn.addEventListener('click', () => {
     fetchMeme();
     });
@@ -39,7 +35,7 @@ if (els.fetchBtn && els.img) {
         });
     }
 
-    // --- SAVE SYSTEM ---
+    // saving
     els.saveBtn.addEventListener('click', () => {
     if (!state.currentMeme) return;
     const saved = JSON.parse(localStorage.getItem('savedMemes') || '[]');
@@ -49,13 +45,12 @@ if (els.fetchBtn && els.img) {
     localStorage.setItem('savedMemes', JSON.stringify(saved));
     renderSaved();
 
-    // Feedback
     els.saveBtn.innerText = '✅';
     setTimeout(() => els.saveBtn.innerText = '💾', 1000);
     });
 }
 
-// --- 18+ NOTICE ---
+// 18+ notice
 // Shown once per browser; memes load only after it's confirmed.
 function ageGate(start) {
   let ok = null;
@@ -78,7 +73,7 @@ function ageGate(start) {
   show();
 }
 
-// --- FETCH ---
+// fetching
 async function fetchMeme() {
   if (state.isLoading) return;
   state.isLoading = true;
@@ -95,7 +90,7 @@ async function fetchMeme() {
       const res = await fetch(url);
       const data = await res.json();
       if (data.url && data.url.match(/\.(jpg|jpeg|png|gif)$/i)) {
-        // Preload image
+        // preload so it shows up all at once
         const tempImg = new Image();
         tempImg.onload = () => {
           els.img.src = data.url;
@@ -113,13 +108,13 @@ async function fetchMeme() {
     }
   }
 
-  // Error State
+  // both requests failed
   state.isLoading = false;
   els.loader.style.opacity = '0';
   els.credit.innerText = "Error fetching meme 😢";
 }
 
-// --- DRAWER LOGIC ---
+// saved drawer
 const viewSavedBtn = document.getElementById('view-saved-btn');
 const closeDrawerBtn = document.getElementById('close-drawer');
 
@@ -154,13 +149,13 @@ window.loadSaved = (i) => {
   els.saveBtn.disabled = true;
 };
 
-// --- THEME LOGIC ---
+// theme
 const themeToggle = document.getElementById('theme-toggle');
 const sun = document.getElementById('icon-sun');
 const moon = document.getElementById('icon-moon');
 
 if (themeToggle) {
-    // Check saved theme
+    // use the saved theme if there is one
     if (localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark-mode');
     sun.style.display = 'none';
