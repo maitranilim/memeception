@@ -1,7 +1,7 @@
 :root {
   /* Palette */
   --hue: 220;
-  --accent: #0ea5ff; /* Vivid Blue */
+  --accent: #0ea5ff;
 
   --bg-light: #f4f5f7;
   --surface-light: #ffffff;
@@ -75,7 +75,7 @@ h1 span { color: var(--accent); }
   gap: 10px;
 }
 
-/* --- 3D Micro Buttons --- */
+/* --- Header buttons --- */
 .micro-btn {
   background: var(--surface);
   border: none;
@@ -137,7 +137,7 @@ h1 span { color: var(--accent); }
   box-shadow: 0 0 0 transparent;
 }
 
-/* --- Stationary Meme Viewer --- */
+/* --- Meme viewer --- */
 .card-scene {
   margin-bottom: 2rem;
 }
@@ -312,7 +312,7 @@ h1 span { color: var(--accent); }
 .age-no { background: var(--bg); color: var(--text); box-shadow: 0 6px 0 var(--shadow); }
 .age-actions > *:active { transform: translateY(6px); box-shadow: 0 0 0 transparent; }
 
-/* --- Saved Drawer (Bottom Sheet) --- */
+/* --- Saved drawer --- */
 .drawer {
   position: fixed;
   bottom: 0;
@@ -369,7 +369,7 @@ h1 span { color: var(--accent); }
   font-size: 10px; cursor: pointer;
 }
 
-/* --- FAQ & SEO Section --- */
+/* --- FAQ --- */
 .seo-section {
   margin-top: 4rem;
   padding-top: 2rem;
@@ -424,7 +424,7 @@ details[open] summary::after { transform: rotate(45deg); }
   opacity: 0.9;
 }
 
-/* Footer Credit */
+/* --- Footer --- */
 .credit-bar {
   margin-top: 3rem;
   text-align: center;
